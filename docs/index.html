@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Live Well — Agent Operating System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --lake:#0B4F5C; --lake-deep:#083B45; --teal:#127C8E; --aqua:#2BA6B8;
+    --sun:#F4A93C; --coral:#EE7B5B; --sand:#F4ECD8; --foam:#F2F8F9;
+    --ink:#10333A; --slate:#5E7E84; --white:#FFFFFF;
+    --disp:'Bricolage Grotesque',system-ui,sans-serif;
+    --body:'Public Sans',system-ui,sans-serif;
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--body);background:var(--foam);color:var(--ink);line-height:1.55;min-height:100vh}
+  button{font-family:inherit;cursor:pointer}
+  :focus-visible{outline:3px solid var(--sun);outline-offset:2px;border-radius:4px}
+
+  /* ---------- header: the water line ---------- */
+  header{background:linear-gradient(175deg,var(--lake-deep) 0%,var(--lake) 70%);color:var(--white);padding:2.2rem 1.25rem 0;position:relative;overflow:hidden}
+  .hwrap{max-width:960px;margin:0 auto;position:relative;z-index:2}
+  .eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.22em;color:var(--sun);text-transform:uppercase}
+  h1{font-family:var(--disp);font-weight:800;font-size:clamp(1.9rem,5.5vw,3.1rem);line-height:1.05;margin:.5rem 0 .6rem;letter-spacing:-.01em}
+  .sub{color:#BFE3EA;max-width:36rem;font-size:.98rem;margin-bottom:1.6rem}
+  .ripples{position:absolute;inset:auto 0 0 0;height:70px;z-index:1;opacity:.5}
+
+  /* ---------- tabs: the tackle box ---------- */
+  nav{max-width:960px;margin:0 auto;display:flex;gap:.4rem;position:relative;z-index:3}
+  .tab{border:none;background:rgba(255,255,255,.12);color:#D8EEF3;font-family:var(--disp);font-weight:600;font-size:.92rem;padding:.7rem 1.1rem;border-radius:10px 10px 0 0;transition:background .18s,color .18s}
+  .tab:hover{background:rgba(255,255,255,.22)}
+  .tab[aria-selected="true"]{background:var(--foam);color:var(--lake)}
+  .tab .n{font-family:var(--mono);font-size:.68rem;color:var(--sun);margin-right:.45rem}
+  .tab[aria-selected="true"] .n{color:var(--coral)}
+
+  main{max-width:960px;margin:0 auto;padding:1.6rem 1.25rem 4rem}
+  section[role="tabpanel"]{display:none;animation:rise .35s ease}
+  section[role="tabpanel"].on{display:block}
+  @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+  h2{font-family:var(--disp);font-weight:800;font-size:1.5rem;color:var(--lake);margin-bottom:.3rem}
+  .lede{color:var(--slate);font-size:.95rem;margin-bottom:1.4rem;max-width:40rem}
+
+  /* ---------- view 1: workflow line ---------- */
+  .line-wrap{position:relative;margin:2.4rem 0 1.2rem}
+  .fishline{position:absolute;top:26px;left:4%;right:4%;height:3px;background:repeating-linear-gradient(90deg,var(--aqua) 0 10px,transparent 10px 16px);border-radius:2px}
+  .bobber{position:absolute;top:8px;width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 35% 30%,var(--white) 0 18%,var(--coral) 19% 55%,var(--lake) 56%);border:3px solid var(--white);box-shadow:0 3px 10px rgba(11,79,92,.35);transition:left .4s cubic-bezier(.5,1.4,.5,1);z-index:2;pointer-events:none}
+  .phases{display:flex;justify-content:space-between;position:relative}
+  .phase{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:.5rem;width:15%;padding:.2rem 0}
+  .dot{width:56px;height:56px;border-radius:50%;background:var(--white);border:3px solid var(--aqua);display:grid;place-items:center;font-family:var(--disp);font-weight:800;font-size:1.15rem;color:var(--teal);transition:transform .18s,border-color .18s,background .18s}
+  .phase:hover .dot{transform:translateY(-3px)}
+  .phase.sel .dot{background:var(--sun);border-color:var(--sun);color:var(--lake-deep)}
+  .plabel{font-size:.72rem;font-weight:600;color:var(--slate);text-align:center;line-height:1.2}
+  .phase.sel .plabel{color:var(--lake)}
+  .phase-card{background:var(--white);border-radius:14px;padding:1.4rem 1.5rem;box-shadow:0 4px 18px rgba(11,79,92,.10);border-left:6px solid var(--sun)}
+  .phase-card h3{font-family:var(--disp);font-size:1.2rem;color:var(--lake);margin-bottom:.15rem}
+  .phase-card .who{font-family:var(--mono);font-size:.72rem;color:var(--coral);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.7rem}
+  .phase-card p{font-size:.94rem;margin-bottom:.6rem}
+  .gate{background:var(--sand);border-radius:8px;padding:.6rem .8rem;font-size:.85rem}
+  .gate b{color:var(--teal)}
+  @media(max-width:640px){
+    .dot{width:42px;height:42px;font-size:.95rem}
+    .plabel{font-size:.6rem}
+    .fishline{top:20px}
+    .bobber{width:18px;height:18px;top:5px}
+  }
+
+  /* ---------- view 2: agents ---------- */
+  .agrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem;margin-bottom:1.6rem}
+  .acard{background:var(--white);border:none;text-align:left;border-radius:14px;padding:1.2rem 1.3rem;box-shadow:0 4px 14px rgba(11,79,92,.08);border-top:6px solid var(--teal);transition:transform .15s,box-shadow .15s}
+  .acard:hover{transform:translateY(-3px);box-shadow:0 8px 22px rgba(11,79,92,.16)}
+  .acard.sel{border-top-color:var(--sun);box-shadow:0 8px 24px rgba(11,79,92,.2)}
+  .acard.ghost{opacity:.55;border-top-color:var(--slate)}
+  .aname{font-family:var(--mono);font-weight:500;font-size:.98rem;color:var(--lake)}
+  .arole{font-size:.82rem;color:var(--slate);margin:.25rem 0 .7rem}
+  .chip{display:inline-block;font-family:var(--mono);font-size:.68rem;padding:.18rem .55rem;border-radius:99px;margin-right:.3rem}
+  .chip.model{background:var(--sand);color:var(--ink)}
+  .chip.ro{background:#E1F2F5;color:var(--teal)}
+  .chip.plan{background:#F6E7E1;color:var(--coral)}
+  .adetail{background:var(--lake);color:#E5F4F7;border-radius:14px;padding:1.5rem 1.6rem}
+  .adetail h3{font-family:var(--disp);color:var(--white);font-size:1.25rem}
+  .adetail .mono{font-family:var(--mono);font-size:.8rem;color:var(--sun)}
+  .adetail dl{display:grid;grid-template-columns:110px 1fr;gap:.45rem .9rem;margin-top:1rem;font-size:.9rem}
+  .adetail dt{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;color:var(--aqua);text-transform:uppercase;padding-top:.15rem}
+  .adetail dd b{color:var(--sun)}
+  @media(max-width:520px){.adetail dl{grid-template-columns:1fr}}
+
+  /* ---------- view 3: brief builder ---------- */
+  .builder{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem}
+  @media(max-width:760px){.builder{grid-template-columns:1fr}}
+  .field{margin-bottom:1rem}
+  label{display:block;font-family:var(--disp);font-weight:600;font-size:.85rem;color:var(--lake);margin-bottom:.3rem}
+  .hint{font-weight:400;color:var(--slate);font-size:.76rem;font-family:var(--body)}
+  input[type=text],textarea{width:100%;border:2px solid #CFE4E9;border-radius:9px;padding:.6rem .7rem;font-family:var(--body);font-size:.9rem;background:var(--white);color:var(--ink)}
+  input:focus,textarea:focus{border-color:var(--aqua);outline:none}
+  textarea{resize:vertical;min-height:60px}
+  .out{background:var(--lake-deep);border-radius:14px;padding:1.2rem;position:relative}
+  .out pre{font-family:var(--mono);font-size:.78rem;color:#CDEDF3;white-space:pre-wrap;word-break:break-word;line-height:1.6}
+  .copybtn{position:absolute;top:.9rem;right:.9rem;background:var(--sun);color:var(--lake-deep);border:none;font-family:var(--disp);font-weight:600;font-size:.8rem;padding:.45rem .9rem;border-radius:8px}
+  .copybtn:hover{background:#FFBD59}
+  footer{background:var(--lake-deep);color:#9FCBD4;text-align:center;font-size:.8rem;padding:1.4rem;font-family:var(--mono)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hwrap">
+    <p class="eyebrow">Agent operating system · field guide</p>
+    <h1>The Live Well</h1>
+    <p class="sub">One repo of living files, a contract every agent signs, and a human gate nothing ships without. Three views: how work flows, who does it, and how to cast a new task.</p>
+    <nav role="tablist" aria-label="Views">
+      <button class="tab" role="tab" id="tab-flow" aria-selected="true" aria-controls="view-flow"><span class="n">01</span>The Workflow</button>
+      <button class="tab" role="tab" id="tab-agents" aria-selected="false" aria-controls="view-agents"><span class="n">02</span>The Agents</button>
+      <button class="tab" role="tab" id="tab-brief" aria-selected="false" aria-controls="view-brief"><span class="n">03</span>Brief Builder</button>
+    </nav>
+  </div>
+  <svg class="ripples" viewBox="0 0 1200 70" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0 45 Q150 25 300 45 T600 45 T900 45 T1200 45 V70 H0 Z" fill="rgba(43,166,184,.25)"/>
+    <path d="M0 55 Q200 38 400 55 T800 55 T1200 55 V70 H0 Z" fill="rgba(43,166,184,.35)"/>
+  </svg>
+</header>
+
+<main>
+
+  <!-- ============ VIEW 1: WORKFLOW ============ -->
+  <section id="view-flow" role="tabpanel" aria-labelledby="tab-flow" class="on">
+    <h2>Six phases, one bobber</h2>
+    <p class="lede">Every task follows the same line, intake to logged lesson. Tap a phase to see what happens there and which gate it must pass.</p>
+
+    <div class="line-wrap">
+      <div class="fishline" aria-hidden="true"></div>
+      <div class="bobber" id="bobber" aria-hidden="true"></div>
+      <div class="phases" id="phases"></div>
+    </div>
+
+    <div class="phase-card" id="phaseCard" aria-live="polite"></div>
+  </section>
+
+  <!-- ============ VIEW 2: AGENTS ============ -->
+  <section id="view-agents" role="tabpanel" aria-labelledby="tab-agents">
+    <h2>The crew and their rods</h2>
+    <p class="lede">Each agent has one job, a tool allowlist, and a pinned model — reasoning where it pays, cheap tokens where it doesn't. Tap a card for the full spec.</p>
+    <div class="agrid" id="agrid"></div>
+    <div class="adetail" id="adetail" aria-live="polite"></div>
+  </section>
+
+  <!-- ============ VIEW 3: BRIEF BUILDER ============ -->
+  <section id="view-brief" role="tabpanel" aria-labelledby="tab-brief">
+    <h2>Cast a new task</h2>
+    <p class="lede">Fill in the brief; the markdown updates live. Copy it into <span style="font-family:var(--mono);font-size:.85em">process/briefs/</span> and paste prompt P-001 into Claude Code. No brief, no work.</p>
+
+    <div class="builder">
+      <form id="briefForm">
+        <div class="field"><label for="f-title">Title <span class="hint">— short and specific</span></label>
+          <input type="text" id="f-title" placeholder="Weekly active users by region"></div>
+        <div class="field"><label for="f-goal">Goal <span class="hint">— the outcome, not the activity</span></label>
+          <input type="text" id="f-goal" placeholder="Stakeholders can see WAU trend by region for Q2"></div>
+        <div class="field"><label for="f-defs">Definitions required <span class="hint">— DEF IDs, or "audit needed"</span></label>
+          <input type="text" id="f-defs" placeholder="DEF-001, DEF-004"></div>
+        <div class="field"><label for="f-deliv">Deliverable <span class="hint">— exact artifact + destination</span></label>
+          <input type="text" id="f-deliv" placeholder="One .sql file in outputs/"></div>
+        <div class="field"><label for="f-done">Done means <span class="hint">— objective acceptance criteria</span></label>
+          <textarea id="f-done" placeholder="Query runs; totals match dashboard X within 1%"></textarea></div>
+        <div class="field"><label for="f-qa">QA plan <span class="hint">— what you'll check by hand</span></label>
+          <textarea id="f-qa" placeholder="Recompute June row count; spot-check two regions"></textarea></div>
+      </form>
+
+      <div class="out">
+        <button class="copybtn" id="copyBtn">Copy</button>
+        <pre id="briefOut"></pre>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>files are the catch · agents are the rods · you hold the net</footer>
+
+<script>
+/* ---------- tabs ---------- */
+const tabs=[...document.querySelectorAll('.tab')];
+tabs.forEach(t=>t.addEventListener('click',()=>{
+  tabs.forEach(x=>x.setAttribute('aria-selected',x===t));
+  document.querySelectorAll('[role=tabpanel]').forEach(p=>p.classList.toggle('on',p.id===t.getAttribute('aria-controls')));
+}));
+tabs.forEach((t,i)=>t.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight')tabs[(i+1)%tabs.length].focus();
+  if(e.key==='ArrowLeft')tabs[(i+tabs.length-1)%tabs.length].focus();
+}));
+
+/* ---------- view 1: phases ---------- */
+const PHASES=[
+ {t:"Intake",who:"You",d:"Write a task brief: goal, definitions required, deliverable, done-means, QA plan. The Brief Builder tab generates one.",g:"<b>Gate:</b> no brief, no work."},
+ {t:"Plan",who:"Orchestrator (main session)",d:"Decompose the brief into smallest reusable units, assign each to a sub-agent, list the DEF IDs required.",g:"<b>Gate:</b> a 30-second human approval of the plan."},
+ {t:"Ground",who:"Orchestrator + you",d:"Verify every required definition exists in definitions.md. Missing ones are drafted and approved before any execution.",g:"<b>Gate:</b> agents never invent business logic."},
+ {t:"Execute",who:"Sub-agents",d:"Builders run their units in dependency order. Every deliverable ends with a Handoff Block: what, grounding, assumptions, confidence, QA hints.",g:"<b>Gate:</b> tool allowlists — the builder is read-only against your files and the read-only DB user."},
+ {t:"Verify",who:"Checker agents",d:"sql-validator red-teams the output against definitions and the brief: grounding audit, correctness risks, a sanity plan you can run.",g:"<b>Gate:</b> validators find, never fix. FAIL blocks the line."},
+ {t:"QA + Log",who:"You, then agents",d:"You review with the QA hints, issue a verdict, and the session lands in memory_log.md. Weekly retrospectives turn corrections into lessons.",g:"<b>Gate:</b> nothing ships without your verdict."}
+];
+const phasesEl=document.getElementById('phases'),card=document.getElementById('phaseCard'),bobber=document.getElementById('bobber');
+PHASES.forEach((p,i)=>{
+  const b=document.createElement('button');b.className='phase';b.setAttribute('aria-label','Phase '+i+': '+p.t);
+  b.innerHTML=`<span class="dot">${i}</span><span class="plabel">${p.t}</span>`;
+  b.addEventListener('click',()=>selPhase(i));phasesEl.appendChild(b);
+});
+function selPhase(i){
+  [...phasesEl.children].forEach((c,j)=>c.classList.toggle('sel',j===i));
+  const p=PHASES[i];
+  card.innerHTML=`<h3>Phase ${i} — ${p.t}</h3><p class="who">${p.who}</p><p>${p.d}</p><div class="gate">${p.g}</div>`;
+  const btn=phasesEl.children[i],w=phasesEl.getBoundingClientRect(),d=btn.querySelector('.dot').getBoundingClientRect();
+  bobber.style.left=(d.left-w.left+d.width/2-11)+'px';
+}
+selPhase(0);
+window.addEventListener('resize',()=>{const s=[...phasesEl.children].findIndex(c=>c.classList.contains('sel'));if(s>-1)selPhase(s);});
+
+/* ---------- view 2: agents ---------- */
+const AGENTS=[
+ {n:"orchestrator",role:"Main session — plans, delegates, escalates",model:"fable / strongest",tools:"All (with your approval gates)",mission:"Read the brief, decompose to smallest reusable units, route each to the right sub-agent, and surface every escalation to you.",forbidden:"Executing specialist work itself; editing definitions.md.",why:"Few tokens, all judgment — spend the frontier model here.",chips:["plan"]},
+ {n:"sql-builder",role:"Writes grounded SQL from briefs",model:"sonnet",tools:"Read, Grep, Glob",mission:"Produce runnable SQL where every metric traces to a cited DEF ID, ending in a Handoff Block with QA hints.",forbidden:"Inventing business logic; validating its own work; any write to grounding/.",why:"Grounded generation against explicit definitions — squarely Sonnet-class.",chips:["ro"]},
+ {n:"sql-validator",role:"Red-teams SQL before human QA",model:"sonnet",tools:"Read, Grep, Glob",mission:"Grounding audit, brief fidelity, correctness risks, lessons check — then a verdict and a sanity plan you can run.",forbidden:"Fixing anything. Findings only; a PASS must state what was checked.",why:"Adversarial review needs real reasoning — don't Haiku this one.",chips:["ro"]},
+ {n:"retrospective",role:"Weekly self-loop (planned)",model:"fable / strongest",tools:"Read, Grep",mission:"Scan a week of memory_log.md, find recurring failure modes, propose diffs to lessons.md and prompts.md.",forbidden:"Applying its own diffs — you review every change.",why:"Pattern synthesis across sessions is the highest-judgment recurring task.",chips:["ro"],ghost:true},
+ {n:"librarian",role:"Index + log housekeeping (planned)",model:"haiku",tools:"Read, Edit (index/log only)",mission:"Keep index.md pointers fresh and memory_log.md entries well-formed.",forbidden:"Touching definitions.md or lessons.md.",why:"Mostly file ops — cheap tokens, negligible quality gap.",chips:[],ghost:true}
+];
+const agrid=document.getElementById('agrid'),adetail=document.getElementById('adetail');
+AGENTS.forEach((a,i)=>{
+  const c=document.createElement('button');c.className='acard'+(a.ghost?' ghost':'');
+  c.innerHTML=`<div class="aname">${a.n}</div><div class="arole">${a.role}</div>
+    <span class="chip model">model: ${a.model}</span>${a.chips.includes('ro')?'<span class="chip ro">read-only</span>':''}${a.chips.includes('plan')?'<span class="chip plan">plans only</span>':''}`;
+  c.addEventListener('click',()=>selAgent(i));agrid.appendChild(c);
+});
+function selAgent(i){
+  [...agrid.children].forEach((c,j)=>c.classList.toggle('sel',j===i));
+  const a=AGENTS[i];
+  adetail.innerHTML=`<h3>${a.n}</h3><p class="mono">${a.ghost?'planned — add after 3+ recurrences':'.claude/agents/'+a.n+'.md'}</p>
+    <dl><dt>Mission</dt><dd>${a.mission}</dd>
+    <dt>Model</dt><dd><b>${a.model}</b> — ${a.why}</dd>
+    <dt>Tools</dt><dd>${a.tools}</dd>
+    <dt>Forbidden</dt><dd>${a.forbidden}</dd></dl>`;
+}
+selAgent(1);
+
+/* ---------- view 3: brief builder ---------- */
+const F=id=>document.getElementById(id);
+const fields=['f-title','f-goal','f-defs','f-deliv','f-done','f-qa'];
+function taskId(){const d=new Date(),p=n=>String(n).padStart(2,'0');return `TASK-${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}-01`;}
+function render(){
+  const v=id=>F(id).value.trim()||'<'+F(id).placeholder+'>';
+  F('briefOut').textContent=
+`# ${taskId()}: ${v('f-title')}
+GOAL: ${v('f-goal')}
+CONTEXT: <index.md IDs to load>
+DEFINITIONS REQUIRED: ${v('f-defs')}
+DELIVERABLE: ${v('f-deliv')}
+DONE MEANS: ${v('f-done')}
+CONSTRAINTS: <deadline, tools, things to avoid>
+QA PLAN: ${v('f-qa')}`;
+}
+fields.forEach(id=>F(id).addEventListener('input',render));render();
+F('copyBtn').addEventListener('click',async()=>{
+  try{await navigator.clipboard.writeText(F('briefOut').textContent);}
+  catch(e){const r=document.createRange();r.selectNodeContents(F('briefOut'));const s=getSelection();s.removeAllRanges();s.addRange(r);document.execCommand('copy');s.removeAllRanges();}
+  F('copyBtn').textContent='Copied ✓';setTimeout(()=>F('copyBtn').textContent='Copy',1600);
+});
+</script>
+</body>
+</html>

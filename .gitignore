@@ -1,0 +1,13 @@
+# credentials & machine-local — NEVER commit
+.my.cnf
+*.pem
+.env
+.claude/settings.local.json
+
+# scratch / non-deliverables
+*.log
+.DS_Store
+node_modules/
+
+# DLC-001: re-identification keys stay local by default
+outputs/mappings/
